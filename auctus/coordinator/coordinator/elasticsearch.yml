@@ -1,0 +1,466 @@
+_refs:
+  analyzer: &analyzer
+    index:
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-custom-analyzer.html
+      analysis:
+        analyzer:
+          default:
+            type: custom
+            tokenizer: standard
+            char_filter:
+            - html_strip
+            filter:
+            - lowercase
+            # No synonym filter for indexing
+            - general_stemmer
+          default_search:
+            type: custom
+            tokenizer: standard
+            char_filter:
+            - html_strip
+            filter:
+            - lowercase
+            - synonym_filter  # Synonym filter for search only
+            - general_stemmer
+        filter:
+          general_stemmer:
+            type: stemmer
+            language: english
+          synonym_filter:
+            type: synonym_graph
+            synonyms_path: "synonyms/synonyms.txt"
+
+datasets:
+  settings:
+    <<: *analyzer
+  mappings:
+    properties:
+      id:
+        type: keyword
+      name:
+        type: text
+      description:
+        type: text
+      date:
+        type: date
+      filename:
+        type: text
+      license:
+        type: keyword
+      source_url:
+        type: keyword
+      sample:
+        type: text
+        index: false
+      source:
+        type: keyword
+      types:
+        type: keyword
+      size:
+        type: long
+      nb_rows:
+        type: long
+      nb_profiled_rows:
+        type: long
+        index: false
+      nb_columns:
+        type: long
+      nb_spatial_columns:
+        type: long
+      nb_temporal_columns:
+        type: long
+      nb_categorical_columns:
+        type: long
+      nb_numerical_columns:
+        type: long
+      average_row_size:
+        type: float
+      version:
+        type: keyword
+      attribute_keywords:
+        type: text
+      # 'columns' is a nested field, we want
+      # to query individual columns
+      columns:
+        type: nested
+        properties:
+          name:
+            type: text
+            # the following is needed for
+            # the fuzzy query in union search
+            fields:
+              raw:
+                type: keyword
+          structural_type:
+            type: keyword
+          semantic_types:
+            type: keyword
+          missing_values_ratio:
+            type: float
+          unclean_values_ratio:
+            type: float
+          num_distinct_values:
+            type: long
+          admin_area_level:
+            type: long
+          point_format:
+            type: keyword
+          # Numerical summaries
+          mean:
+            type: float
+          stddev:
+            type: float
+          # we want to query individual numerical ranges
+          coverage:
+            type: nested
+            properties:
+              range:
+                type: double_range
+          plot:
+            type: object
+            enabled: false
+      spatial_coverage:
+        type: nested
+        properties:
+          # Keep in sync, search code for 279a32
+          column_names:
+            type: text
+            index: false
+          column_indexes:
+            type: integer
+            index: false
+          type:
+            type: keyword
+          geohashes4:
+            properties:
+              hash:
+                type: keyword
+                index: false
+              number:
+                type: integer
+                index: false
+          # we want to query individual spatial ranges
+          ranges:
+            type: nested
+            properties:
+              range:
+                type: geo_shape
+          number:
+            type: integer
+      temporal_coverage:
+        type: nested
+        properties:
+          column_names:
+            type: text
+            index: false
+          column_indexes:
+            type: integer
+            index: false
+          column_types:
+            type: keyword
+            index: false
+          type:
+            type: keyword
+          temporal_resolution:
+            type: keyword
+          ranges:
+            type: nested
+            properties:
+              range:
+                type: double_range
+      materialize:
+        properties:
+          identifier:
+            type: keyword
+          date:
+            type: date
+          direct_url:
+            type: keyword
+            index: false
+          convert:
+            type: object
+            enabled: false
+      manual_annotations:
+        type: object
+        enabled: false
+columns:
+  settings:
+    <<: *analyzer
+  mappings:
+    properties:
+      dataset_id:
+        type: keyword
+      dataset_name:
+        type: text
+      dataset_description:
+        type: text
+      dataset_date:
+        type: date
+      dataset_filename:
+        type: text
+      dataset_license:
+        type: keyword
+      dataset_source_url:
+        type: keyword
+      dataset_source:
+        type: keyword
+      dataset_types:
+        type: keyword
+      dataset_size:
+        type: long
+      dataset_nb_rows:
+        type: long
+      dataset_nb_profiled_rows:
+        type: long
+        index: false
+      dataset_nb_columns:
+        type: long
+      dataset_nb_spatial_columns:
+        type: long
+      dataset_nb_temporal_columns:
+        type: long
+      dataset_nb_categorical_columns:
+        type: long
+      dataset_nb_numerical_columns:
+        type: long
+      dataset_average_row_size:
+        type: float
+      dataset_version:
+        type: keyword
+        index: false
+      dataset_attribute_keywords:
+        type: text
+      name:
+        type: text
+        # the following is needed for
+        # the fuzzy query for numerical attributes
+        # and for Lazo queries
+        fields:
+          raw:
+            type: keyword
+      index:
+        type: integer
+      structural_type:
+        type: keyword
+      semantic_types:
+        type: keyword
+      missing_values_ratio:
+        type: float
+      unclean_values_ratio:
+        type: float
+      num_distinct_values:
+        type: long
+      admin_area_level:
+        type: long
+      point_format:
+        type: keyword
+      # Numerical summaries
+      mean:
+        type: float
+      stddev:
+        type: float
+      # numerical ranges
+      coverage:
+        type: nested
+        properties:
+          range:
+            type: double_range
+          # the following is needed so we can access this information
+          #   inside the script, and this is not available for type
+          #   'double_range'
+          gte:
+            type: double
+          lte:
+            type: double
+spatial_coverage:
+  settings:
+    <<: *analyzer
+  mappings:
+    properties:
+      dataset_id:
+        type: keyword
+      dataset_name:
+        type: text
+      dataset_description:
+        type: text
+      dataset_date:
+        type: date
+      dataset_filename:
+        type: text
+      dataset_license:
+        type: keyword
+      dataset_source_url:
+        type: keyword
+      dataset_source:
+        type: keyword
+      dataset_types:
+        type: keyword
+      dataset_size:
+        type: long
+      dataset_nb_rows:
+        type: long
+      dataset_nb_profiled_rows:
+        type: long
+        index: false
+      dataset_nb_columns:
+        type: long
+      dataset_nb_spatial_columns:
+        type: long
+      dataset_nb_temporal_columns:
+        type: long
+      dataset_nb_categorical_columns:
+        type: long
+      dataset_nb_numerical_columns:
+        type: long
+      dataset_average_row_size:
+        type: float
+      dataset_version:
+        type: keyword
+        index: false
+      dataset_attribute_keywords:
+        type: text
+      # Keep in sync, search code for 279a32
+      column_names:
+        type: text
+        index: false
+      column_indexes:
+        type: integer
+        index: false
+      type:
+        type: keyword
+      geohashes4:
+        properties:
+          hash:
+            type: keyword
+            index: false
+          number:
+            type: integer
+            index: false
+      ranges:
+        type: nested
+        properties:
+          range:
+            type: geo_shape
+          # the following is needed so we can access this information
+          #   inside the script, and this is not available for type
+          #   'geo_shape'
+          min_lon:
+            type: double
+          max_lat:
+            type: double
+          max_lon:
+            type: double
+          min_lat:
+            type: double
+      number:
+        type: integer
+temporal_coverage:
+  settings:
+    <<: *analyzer
+  mappings:
+    properties:
+      dataset_id:
+        type: keyword
+      dataset_name:
+        type: text
+      dataset_description:
+        type: text
+      dataset_date:
+        type: date
+      dataset_filename:
+        type: text
+      dataset_license:
+        type: keyword
+      dataset_source_url:
+        type: keyword
+      dataset_source:
+        type: keyword
+      dataset_types:
+        type: keyword
+      dataset_size:
+        type: long
+      dataset_nb_rows:
+        type: long
+      dataset_nb_profiled_rows:
+        type: long
+        index: false
+      dataset_nb_columns:
+        type: long
+      dataset_nb_spatial_columns:
+        type: long
+      dataset_nb_temporal_columns:
+        type: long
+      dataset_nb_categorical_columns:
+        type: long
+      dataset_nb_numerical_columns:
+        type: long
+      dataset_average_row_size:
+        type: float
+      dataset_version:
+        type: keyword
+        index: false
+      dataset_attribute_keywords:
+        type: text
+      column_names:
+        type: text
+        index: false
+      column_indexes:
+        type: integer
+        index: false
+      column_types:
+        type: keyword
+        index: false
+      type:
+        type: keyword
+      temporal_resolution:
+        type: keyword
+      ranges:
+        type: nested
+        properties:
+          range:
+            type: double_range
+          # the following is needed so we can access this information
+          #   inside the script, and this is not available for type
+          #   'double_range'
+          gte:
+            type: double
+          lte:
+            type: double
+pending:
+  settings:
+    <<: *analyzer
+  mappings:
+    properties:
+      status:
+        type: keyword
+      error:
+        type: text
+        index: false
+      error_details:
+        properties:
+          exception:
+            type: text
+          exception_type:
+            type: keyword
+          traceback:
+            type: text
+            index: false
+      metadata:
+        type: object
+        enabled: false
+      date:
+        type: date
+      source:
+        type: keyword
+      materialize:
+        properties:
+          identifier:
+            type: keyword
+          date:
+            type: date
+          direct_url:
+            type: keyword
+            index: false
+          convert:
+            type: object
+            enabled: false

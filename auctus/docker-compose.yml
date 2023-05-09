@@ -1,0 +1,487 @@
+version: '2.4'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2  # NOTCI
+    # CI: image: registry.gitlab.com/vida-nyu/auctus/auctus/elasticsearch:7.10.2
+    restart: on-failure
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xmx2g -Xms2g -Des.enforce.bootstrap.checks=true  # NOTCI
+      # CI: - ES_JAVA_OPTS=-Xmx256m -Xms256m -Des.enforce.bootstrap.checks=true
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    cpu_shares: 100
+    ports:
+      - 127.0.0.1:8020:9200
+    volumes:
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data
+      - ./docker/synonyms.txt:/usr/share/elasticsearch/config/synonyms/synonyms.txt
+  elasticsearch-exporter:
+    image: justwatch/elasticsearch_exporter:1.1.0
+    restart: on-failure
+    command:
+      - '--es.uri=http://elasticsearch:9200'
+      - '--es.cluster_settings'
+      - '--es.indices'
+      - '--es.indices_settings'
+    cpu_shares: 100
+    ports:
+      - 9114
+  rabbitmq:
+    image: quay.io/remram44/rabbitmq:3.8.11
+    build:
+      context: ./docker
+      dockerfile: rabbitmq.dockerfile
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PASSWORD}
+    cpu_shares: 100
+    ports:
+      - 127.0.0.1:8010:15672  # Management
+      - 127.0.0.1:8011:5672  # AMQP
+      - 127.0.0.1:8012:15692  # Metrics
+  redis:
+    image: redis:6.2
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    cpu_shares: 100
+    ports:
+      - 6379
+    volumes:
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+  minio:
+    image: minio/minio:RELEASE.2020-10-18T21-54-12Z
+    command: ["server", "/export"]
+    environment:
+      - MINIO_ACCESS_KEY=${S3_KEY}
+      - MINIO_SECRET_KEY=${S3_SECRET}
+    healthcheck:
+      disable: true
+    cpu_shares: 100
+    ports:
+      - 8050:9000
+    volumes:
+      - ./volumes/minio:/export
+  jaeger:
+    image: jaegertracing/all-in-one:1.31
+    ports:
+      - 127.0.0.1:16686:16686
+      - 127.0.0.1:6831:6831/udp
+  lazo:
+    image: registry.gitlab.com/vida-nyu/auctus/lazo-index-service:0.7.2
+    environment:
+      - DATABASE=elasticsearch
+      - PORT=50051
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_INDEX=${ELASTICSEARCH_PREFIX}lazo
+      - JAVA_OPTS=-Xmx2g -Xms2g  # NOTCI
+      # CI: - JAVA_OPTS=-Xmx256m -Xms128m
+    cpu_shares: 30
+    ports:
+      - 127.0.0.1:8030:50051
+      - 8000
+  frontend:
+    image: auctus_frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      - API_URL=${API_URL}
+    cpu_shares: 10
+    ports:
+      - 127.0.0.1:8001:80
+  apiserver:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["datamart-apiserver"]  # NOTCI
+    # CI: command: ["bash", "-c", "set -m; COVERAGE_FILE=/cov/.coverage python -m coverage run --context=server --branch -p -m apiserver & PROCESS=$$!; trap \"kill -INT $$PROCESS\" INT TERM; wait $$PROCESS; wait $$PROCESS"]
+    environment:
+      - AUCTUS_DEBUG=${AUCTUS_DEBUG}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - AUCTUS_OTEL_SERVICE=apiserver
+      - OTEL_TRACES_EXPORTER=jaeger_thrift  # NOTCI
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger  # NOTCI
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831  # NOTCI
+      - OTEL_EXPORTER_JAEGER_AGENT_SPLIT_OVERSIZED_BATCHES=1
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - REDIS_HOST=redis:6379
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+      - NOMINATIM_URL=${NOMINATIM_URL}
+      - AUCTUS_REQUEST_WHITELIST=${AUCTUS_REQUEST_WHITELIST}
+      - AUCTUS_REQUEST_BLACKLIST=${AUCTUS_REQUEST_BLACKLIST}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - API_URL=${API_URL}
+      - CUSTOM_FIELDS=${CUSTOM_FIELDS}
+      # CI: - PYTHONWARNINGS=${PYTHONWARNINGS}
+    cpu_shares: 10
+    ports:
+      - 8002
+    volumes:
+      # CI: - ./cov:/cov
+      - ./volumes/cache:/cache
+    mem_limit: 8000m
+  apilb:
+    build:
+      context: ./docker
+      dockerfile: haproxy.dockerfile
+    restart: on-failure
+    ports:
+      - 127.0.0.1:8002:8002
+      - 127.0.0.1:8004:8004
+    cpu_shares: 100
+    volumes:
+      - ./docker/haproxy.conf:/usr/local/etc/haproxy/haproxy.cfg:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 10s
+      retries: 2
+  coordinator:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["coordinator"]  # NOTCI
+    # CI: command: ["bash", "-c", "set -m; COVERAGE_FILE=/cov/.coverage python -m coverage run --context=server --branch -p -m coordinator & PROCESS=$$!; trap \"kill -INT $$PROCESS\" INT TERM; wait $$PROCESS; wait $$PROCESS"]
+    environment:
+      - AUCTUS_DEBUG=${AUCTUS_DEBUG}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - API_URL=${API_URL}
+      - CUSTOM_FIELDS=${CUSTOM_FIELDS}
+      # CI: - PYTHONWARNINGS=${PYTHONWARNINGS}
+    cpu_shares: 100
+    ports:
+      - 127.0.0.1:8003:8003
+    volumes:
+      # CI: - ./cov:/cov
+      - ./volumes/cache:/cache
+  cache-cleaner:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["cache_cleaner"]  # NOTCI
+    # CI: command: ["bash", "-c", "set -m; COVERAGE_FILE=/cov/.coverage python -m coverage run --context=server --branch -p -m cache_cleaner & PROCESS=$$!; trap \"kill -INT $$PROCESS\" INT TERM; wait $$PROCESS; wait $$PROCESS"]
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - MAX_CACHE_BYTES=${MAX_CACHE_BYTES}
+      # CI: - PYTHONWARNINGS=${PYTHONWARNINGS}
+    cpu_shares: 100
+    volumes:
+      # CI: - ./cov:/cov
+      - ./volumes/cache:/cache
+  profiler:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["profiler"]  # NOTCI
+    # CI: command: ["bash", "-c", "set -m; COVERAGE_FILE=/cov/.coverage python -m coverage run --context=server --branch -p -m profiler & PROCESS=$$!; trap \"kill -INT $$PROCESS\" INT TERM; wait $$PROCESS; wait $$PROCESS"]
+    environment:
+      - AUCTUS_DEBUG=${AUCTUS_DEBUG}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - AUCTUS_OTEL_SERVICE=profiler
+      - OTEL_TRACES_EXPORTER=jaeger_thrift  # NOTCI
+      - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger  # NOTCI
+      - OTEL_EXPORTER_JAEGER_AGENT_PORT=6831  # NOTCI
+      - OTEL_EXPORTER_JAEGER_AGENT_SPLIT_OVERSIZED_BATCHES=1
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+      - NOMINATIM_URL=${NOMINATIM_URL}
+      - AUCTUS_REQUEST_WHITELIST=${AUCTUS_REQUEST_WHITELIST}
+      - AUCTUS_REQUEST_BLACKLIST=${AUCTUS_REQUEST_BLACKLIST}
+      # CI: - PYTHONWARNINGS=${PYTHONWARNINGS}
+    cpu_shares: 10
+    volumes:
+      # CI: - ./cov:/cov
+      - ./volumes/cache:/cache
+  prometheus:
+    image: prom/prometheus:v2.22.0
+    cpu_shares: 100
+    ports:
+      - 127.0.0.1:8040:9090
+    volumes:
+      - ./volumes/prometheus:/prometheus
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+  grafana:
+    image: quay.io/remram44/grafana:7.5.15-image_renderer
+    build:
+      context: "./docker"
+      dockerfile: grafana.dockerfile
+      args:
+        - GRAFANA_VERSION=7.5.15
+        - GF_INSTALL_IMAGE_RENDERER_PLUGIN=v3.4.1
+    environment:
+      - GF_SECURITY_DATA_SOURCE_PROXY_WHITELIST=prometheus:9090
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      #- GF_SMTP_ENABLED=true
+      #- GF_SMTP_HOST=ip-of-the-host:25
+      #- GF_SMTP_FROM_NAME=Auctus Development
+      #- GF_SMTP_STARTTLS_POLICY=NoStartTLS
+      #- GF_SERVER_ROOT_URL=https://grafana.example.org/
+    cpu_shares: 100
+    ports:
+      - 127.0.0.1:8041:3000
+    volumes:
+      - ./volumes/grafana:/var/lib/grafana
+  test-discoverer:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "discovery/test_discovery.py"]  # NOTCI
+    # CI: command: ["bash", "-c", "set -m; COVERAGE_FILE=/cov/.coverage python -m coverage run --context=server --branch -p discovery/test_discovery.py & PROCESS=$$!; trap \"kill -INT $$PROCESS\" INT TERM; wait $$PROCESS"]
+    environment:
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+      # CI: - PYTHONWARNINGS=${PYTHONWARNINGS}
+    cpu_shares: 10
+    # CI: volumes:
+    # CI:   - ./cov:/cov
+  socrata:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "socrata_discovery"]
+    cpu_shares: 10
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+    volumes:
+      - ./docker/socrata.json:/usr/src/app/socrata.json
+  zenodo:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "zenodo_discovery"]
+    cpu_shares: 10
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+    volumes:
+      - ./docker/zenodo.json:/usr/src/app/zenodo.json
+  ckan:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "ckan_discovery"]
+    cpu_shares: 10
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+    volumes:
+      - ./docker/ckan.json:/usr/src/app/ckan.json
+  uaz-indicators:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "uaz_indicators"]
+    cpu_shares: 10
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+  worldbank:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "worldbank_discovery"]
+    cpu_shares: 10
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+  isi:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "isi_discovery"]
+    cpu_shares: 10
+    environment:
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - S3_KEY=${S3_KEY}
+      - S3_SECRET=${S3_SECRET}
+      - S3_URL=${S3_URL}
+      - S3_CLIENT_URL=${S3_CLIENT_URL}
+      - S3_BUCKET_PREFIX=${S3_BUCKET_PREFIX}
+      - GCS_PROJECT=${GCS_PROJECT}
+      - GCS_CREDS=${GCS_CREDS}
+      - GCS_BUCKET_PREFIX=${GCS_BUCKET_PREFIX}
+      - LAZO_SERVER_HOST=lazo
+      - LAZO_SERVER_PORT=50051
+      - ISI_DATAMART_URL=${ISI_DATAMART_URL}
+  noaa:
+    image: auctus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "noaa_discovery.noaa_discovery"]
+    environment:
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+      - ELASTICSEARCH_HOSTS=elasticsearch:9200
+      - ELASTICSEARCH_PREFIX=${ELASTICSEARCH_PREFIX}
+      - AMQP_HOST=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=${AMQP_USER}
+      - AMQP_PASSWORD=${AMQP_PASSWORD}
+      - NOAA_TOKEN=${NOAA_TOKEN}
+    cpu_shares: 10
