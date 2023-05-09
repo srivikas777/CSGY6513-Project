@@ -58,7 +58,7 @@ The Backend We server will be hosted on: http://127.0.0.1:5000
 
 - Workflow: When the user selects a dataset and want's to query that dataset, that user can click on the SQL Query command, where it gets redirected into another page with a New Frontend where the user has the ability to enter the SQL commands. After hitting the submit button, the user can view the results in that same user Interface, where the results will be well formatted in the form of a dataframe(Rows and Columns).
 
-![Interface](interface.png)
+![Interface](Interface.png)
 
 ## Related Work:
 
