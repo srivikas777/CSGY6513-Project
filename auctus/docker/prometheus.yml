@@ -1,0 +1,58 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+  - job_name: elasticsearch
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    static_configs:
+      - targets: ["elasticsearch-exporter:9114"]
+  - job_name: rabbitmq
+    scrape_timeout: 5s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["rabbitmq:15692"]
+  - job_name: haproxy
+    scrape_timeout: 5s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['apilb:8000']
+  - job_name: apiserver
+    dns_sd_configs:
+      - names:
+          - apiserver
+        type: "A"
+        port: 8000
+        refresh_interval: 60s
+  - job_name: coordinator
+    static_configs:
+      - targets: ["coordinator:8000"]
+  - job_name: cache-cleaner
+    dns_sd_configs:
+      - names:
+          - cache-cleaner
+        type: "A"
+        port: 8000
+        refresh_interval: 60s
+  - job_name: profiler
+    dns_sd_configs:
+      - names:
+          - profiler
+        type: "A"
+        port: 8000
+        refresh_interval: 60s
+  - job_name: lazo
+    dns_sd_configs:
+      - names:
+          - lazo
+        type: "A"
+        port: 8000
+        refresh_interval: 60s
+  - job_name: nominatim
+    scrape_timeout: 5s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["nominatim"]

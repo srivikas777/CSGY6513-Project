@@ -1,0 +1,1037 @@
+#
+# AUCTUS: FROM: https://github.com/agora-team/elasticsearch-synonyms
+#
+
+# British English and American English Spellings
+# Sourced from: AVKO.org
+# https://to.noop.pw/2sNor7C
+
+# British -re vs. American -er
+accoutre, accouter
+accoutrement, accouterment
+amphitheatre, amphitheater
+calibre, caliber
+centilitre, centiliter
+centimetre, centimeter
+centre, center
+centred, centered
+centring, centering
+centreboard, centerboard
+centrefold, centerfold
+centrepiece, centerpiece
+decilitre, deciliter
+decimetre, decimeter
+decametre, decameter
+epicentre, epicenter
+fibre, fiber
+fibreboard, fiberboard
+fibreglass, fiberglass
+goitre, goiter
+kilometre, kilometer
+laundrette, launderette
+lacklustre, lackluster
+litre, liter
+lustre, luster
+lustreless, lusterless
+manoeuvre, maneuver
+manoeuvrable, maneuverable
+manoeuvrability, maneuverability
+meagre, meager
+meagrely, meagerly
+meagreness, meagerness
+metre, meter
+millilitre, milliliter
+millimetre, millimeter
+mitre, miter
+nitre, niter
+outmanoeuvre, outmaneuver
+philtre, philter
+reconnoitre, reconnoiter
+reconnoitred, reconnoitered
+reconnoitres, reconnoiters
+reconnoitring, reconnoitering
+sabre, saber
+saltpetre, saltpeter
+sceptre, scepter
+sombre, somber
+sombrely, somberly
+sombreness, somberness
+spectre, specter
+spectres, specters
+theatre, theater
+
+# British -our vs. American -or
+arbour, arbor
+ardour, ardor
+armour, armor
+behaviour, behavior
+behavioural, behavioral
+behaviourism, behaviorism
+behaviourist, behaviorist
+belabour, belabor
+candour, candor
+clamour, clamor
+clangour, clangor
+colour, color
+coloured, colored
+colourfast, colorfast
+colourful, colorful
+colourize, colorize
+colourless, colorless
+demeanour, demeanor
+decolourise, decolorize
+discolour, discolor
+discoloured, discolored
+disfavour, disfavor
+dishonour, dishonor
+dishonourable, dishonorable
+endeavour, endeavor
+favour, favor
+favourable, favorable
+favourite, favorite
+favouritism, favoritism
+fervour, fervor
+flavour, flavor
+flavouring, flavoring
+flavourless, flavorless
+labour, labor
+labourers, laborers
+labourite, laborite
+malodour, malodor
+malodourous, malodorous
+misbehaviour, misbehavior
+misdemeanour, misdemeanor
+multicolour, multicolor
+neighbour, neighbor
+neighbourhood, neighborhood
+neighbourly, neighborly
+neighbourliness, neighborliness
+odour, odor
+parlour, parlor
+rancour, rancor
+rigour, rigor
+rigours, rigors
+rigourous, rigorous
+rumour, rumor
+rumourmonger, rumormonger
+saviour, savior
+saviours, saviors
+savour, savor
+savoury, savory
+splendour, splendor
+succour, succor
+tricolour, tricolor
+tumour, tumor
+uncoloured, uncolored
+unfavourable, unfavorable
+unfavourably, unfavorably
+unflavoured, unflavored
+unsavoury, unsavory
+unsavourily, unsavorily
+valour, valor
+vapour, vapor
+vapourware, vaporware
+varicoloured, varicolored
+vigour, vigor
+vigourous, vigorous
+watercolour, watercolor
+
+# British ould, oult = American old, olt
+mould, mold
+mouldings, moldings
+mouldable, moldable
+moulder, molder
+moudly, moldy
+moult, molt
+remould, remold
+smoulder, smolder
+
+# Miscellaneous British ou for American u
+rouble, ruble
+roubles, rubles
+doukhobor, dukhobor
+
+# British ae/oe/oeu/ vs. American e or eu
+encyclopaedia, encyclopedia
+encyclopaedic, encyclopedic
+leukaemia, leukemia
+manoeuvre, maneuver
+manoeuvrable, maneuverable
+manoeuvrability, maneuverability
+mementoes, mementos
+oedema, edema, edematous
+oedematous, edematous
+oesophagus, esophagus
+oesophagi, esophagi
+oesophageal, esophageal
+oestrogen, estrogen
+oestrous, estrous
+oestrus, estrous
+orthopaedic, orthopedic
+orthopaedist, orthopedist
+outmanoeuvre, outmaneuver
+paediatric, pediatric
+paediatrician, pediatrician
+paedophile, pedophile
+paedophilia, pedophilia
+paedophiliac, pedophiliac
+palaeontology, paleontology
+palaeontologist, paleontologist
+seborrhoea, seborrhea
+septicaemia, septicemia
+toxaemia, toxemia
+toxaemic, toxemic
+tularaemia, tularemia
+uraemia, uremia
+
+# British final e vs. American dropping the e
+adze, adz
+ageing, aging
+annexe, annex
+axe, ax
+blameable, blamable
+judgement, judgment
+judgemental, judgmental
+kindergartener, kindergartner
+liveable, livable
+liveability, livability
+lodgement, lodgment
+misjudgement, misjudgment
+neurone, neuron
+neurones, neurons
+nurseling, nursling
+phoney, phony
+phoneys, phonies
+prejudgement, prejudgment
+rateable, ratable
+rateability, ratability
+rateably, ratably
+saleable, salable
+saleability, salability
+shakeable, shakable
+thiamine, thiamin
+tuneable, tunable
+unliveable, unlivable
+unmoveable, unmovable
+unnameable, unnamable
+untameable, untamable
+
+# British final unaccented -el's & -al's vs. American final unaccented -el's & -al's.
+appal, appall
+apparelled, appareled
+barrelled, barreled
+barrelling, barreling
+bedevilled, bedeviled
+bedevilling, bedeviling
+bejewelled, bejeweled
+bevelled, beveled
+bevelling, beveling
+cancelled, canceled
+cancelling, canceling
+carolling, caroling
+caroller, caroler
+cavilled, caviled
+channelled, channeled
+channelling, channeling
+chiselled, chiseled
+counselled, counseled
+counselling, counseling
+counsellor, counselor
+councillor, councilor
+crueller, crueler
+cruellest, cruelest
+cudgelled, cudgeled
+cudgelling, cudgeling
+dialled, dialed
+dialler, dialer
+dialling, dialing
+disembowelled, disemboweled
+dishevelled, disheveled
+duelled, dueled
+duelling, dueling
+dueller, dueler
+duellist, duelist
+enamelled, enameled
+enrol, enroll
+enrols, enrolls
+enrolled, enrolled
+enrolling, enrolling
+enthral, enthrall
+enthrals, enthralls
+enthralled, enthralled
+eviller, eviler
+evillest, evilest
+equalled, equaled
+equalling, equaling
+fulfilment, fulfillment
+funnelled, funneled
+funnelling, funneling
+gambolled, gamboled
+gambolling, gamboling
+gavelled, gaveled
+gavelling, gaveling
+gravelled, graveled
+grovelled, groveled
+grovelling, groveling
+gruelling, grueling
+initialled, initialed
+initialling, initialing
+jewellery, jewelry
+kennelled, kenneled
+labelled, labeled
+labelling, labeling
+levelled, leveled
+levelling, leveling
+libelled, libeled
+libelling, libeling
+libeller, libeler
+libellous, libelous
+marshalled, marshaled
+marshalling, marshaling
+marvelled, marveled
+marvelling, marveling
+marvellous, marvelous
+mislabelled, mislabeled
+mislabelling, mislabeling
+modelled, modeled
+modelling, modeling
+modeller, modeler
+panelled, paneled
+panelling, paneling
+panellist, panelist
+parcelled, parceled
+parcelling, parceling
+pedalled, pedaled
+pedalling, pedaling
+pummelled, pummeled
+pummelling, pummeling
+quarrelled, quarreled
+quarreller, quarreler
+ravelled, raveled
+ravelling, raveling
+redialled, redialed
+redialling, redialing
+refuelled, refueled
+refuelling, refueling
+relabelled, relabeled
+relabelling, relabeling
+remodelled, remodeled
+remodelling, remodeling
+rivalled, rivaled
+rivalling, rivaling
+shovelled, shoveled
+shovelling, shoveling
+shrivelled, shriveled
+shrivelling, shriveling
+signalled, signaled
+signalling, signaling
+signaller, signaler
+snivelling, sniveling
+snorkelled, snorkeled
+snorkelling, snorkeling
+spiralled, spiraled
+spiralling, spiraling
+stencilled, stenciled
+stencilling, stenciling
+subtotalled, subtotaled
+subtotalling, subtotaling
+swivelled, swiveled
+swivelling, swiveling
+tasselled, tasseled
+teetotaller, teetotaler
+teetotallers, teetotalers
+tinselled, tinseled
+totalled, totaled
+totalling, totaling
+towelled, toweled
+towelling, toweling
+trammelling, trammeling
+travelled, traveled
+travelling, traveling
+traveller, travelers
+tunnelled, tunneled
+tunnelling, tunneling
+unravelled, unraveled
+unravelling, unraveling
+untrammelled, untrammeled
+weaselling, weaseling
+woollen, woolen
+woollens, woolens
+yodelled, yodeled
+yodelling, yodeling
+
+# Miscellaneous English doubled and American undoubled unstressed
+sequinned, sequined
+transferral, transferal
+transferrable, transferable
+
+# Very Different British vs. American Spellings
+aluminium, aluminum
+anticlockwise, counterclockwise
+artefact, artifact
+aubergine, eggplant
+beetroot, beet
+behove, behoove
+bisulphate, bisulfate
+bleeper, beeper
+bobsleigh, bobsled
+bureaux, bureaus
+callipers, calipers
+callisthenics, calisthenics
+camomile, chamomile
+caravanserai, caravansary
+caravanserais, caravansaries
+carburettor, carburetor
+cheque, check
+chequebook, checkbook
+chequer, checker
+chequered, checkered
+chequers, checkers
+chilli, chili
+chillies, chilies
+clarinettist, clarinetist
+cortices, cortexes
+defence, defense
+defenceless, defenseless
+defensive, defensive
+deflexion, deflection
+despatch, dispatch
+dextrous, dexterous
+disulphide, disulfide
+dustman, garbage man
+dustmen, garbage men
+enquire, inquire
+enquiry, inquiry
+fiascos, fiascoes
+flexitime, flextime
+gelatine, gelatin
+gemmology, gemology
+glycerine, glycerin
+gerfalcon, gyrfalcon
+grey, gray
+greys, grays
+greyed, grayed
+greying, graying
+greybeard, graybeard
+greyish, grayish
+greyness, grayness
+greyer, grayer
+greyest, grayest
+jewellery, jewelry
+kerb, curb
+kerbside, curbside
+kerbstone, curbstone
+lasagne, lasagna
+lour, lower
+lours, lowers
+loured, lowered
+louring, lowering
+lissom, lissome
+maestri, maestro
+licence, license
+mina, myna
+mollusc, mollusk
+nonplusses, nonpluses
+nonplussed, nonplused
+nonplussing, nonplusing
+noviciate, novitiate
+omelette, omelet
+pilaff, pilaf
+plonk, plunk
+plough, plow
+polythene, polyethylene
+postcode, zip code
+practise, practice
+programme, program
+programmes, programs
+pyjama, pajama
+pyjamas, pajamas
+racoon, raccoon
+savannah, savanna
+savannahs, savannas
+sceptic, skeptic
+sceptical, skeptical
+sceptically, skeptically
+scepticism, skepticism
+sheikh, sheik
+sheikhdom, sheikdom
+skilful, skillful
+skilfully, skillfully
+skilfulness, skillfulness
+speciality, specialty
+specialities, specialties
+sulpha, sulfa
+sulphanilamide, sulfanilamide
+sulphate, sulfate
+sulphide, sulfide
+sulphite, sulfite
+sulphonamide, sulfonamide
+sulphur, sulfur
+sulphuric, sulfuric
+sunburnt, sunburned
+swot, swat
+thraldom, thralldom
+titbit, tidbit
+tranship, transship
+transhipment, transshipment
+transistorise, transistorize
+transvestism, transvestitism
+tyre, tire
+tyres, tires
+unploughed, unplowed
+unskilful, unskillful
+unskilfully, unskillfully
+unspoilt, unspoiled
+whirr, whir
+widthways, widthwise
+wilful, willful
+wilfully, willfully
+wilfulness, willfulness
+yoghurt, yogurt
+
+#
+# AUCTUS: FROM: https://sites.google.com/site/kevinbouge/synonyms-lists
+#
+
+earth, earth, world, globe
+france, french
+germany, deutschland
+india, bharat
+italy, italia
+japan, nippon, nihon
+spain, espana
+united kingdom, uk, britain, great britain
+united states, united states of america, us, usa
+ability, power
+about, almost, most, nearly, near, nigh, virtually, well-nigh
+about, around
+abrupt, precipitous, sharp
+accept, take, have
+achieve, accomplish, attain, reach
+altitude, height, elevation
+act, move
+action, activity
+actually, really
+acuate, acute, sharp
+advertisement, advert, promotion
+adjacent, next
+aid, assist, assistance, help
+airplane, aeroplane, plane
+airport, airdrome, aerodrome, drome
+alive, live
+alone, lone, lonely, solitary
+always, ever
+among, amongst, amid, amidst
+animal, beast, fauna
+announce, denote
+announcement, proclamation, annunciation, declaration
+answer, reply, respond
+answer, reply, response
+any, whatever, whatsoever
+apartment, flat
+apparel, dress, clothes
+approximately, about, close to, roughly, around
+area, expanse, surface
+argent, silver, silvery, silverish
+argue, contend, debate, fence
+argue, reason
+argument, statement
+ask, inquire, enquire
+assail, assault, attack
+attack, onslaught, onset, onrush
+attempt, effort, endeavor, endeavour, try
+attention, attending
+audio, sound
+authority, authorization, authorisation, potency, dominance
+award, accolade, honor, honour, laurels
+baby, babe, infant
+bag, handbag, pocketbook, purse, suitcase
+barbarous, brutal, cruel, fell, roughshod, savage, vicious
+bargain, deal
+bathroom, bath
+beat, crush, shell, trounce, vanquish
+beginning, commencement, first, outset, start, kickoff
+beginning, origin, root, rootage, source
+indicate, point, signal
+better, improve, amend, ameliorate, meliorate
+beverage, drink, drinkable, potable
+bicycle, bike, wheel, cycle
+bill, account, invoice
+bill, note, bank note, banknote
+bit, chip, flake, fleck, scrap
+blue, bluish, blueish
+blueprint, design, pattern
+book, volume
+boyfriend, fellow, beau, swain
+brain, encephalon
+brand, make
+breast, chest
+bridge, span
+bright, brilliant, vivid
+bring, convey, take
+brow, forehead
+brown, brownish, chocolate-brown, dark-brown
+brusque, brusk, curt, short
+building, edifice
+bulk, mass, volume
+burn, fire
+bus, autobus, coach, charabanc, double-decker, jitney, motorbus, motorcoach, omnibus, passenger vehicle
+buy, purchase
+calculator, reckoner, figurer, estimator, computer
+camera, photography
+campaign, cause, crusade, drive, movement, effort
+capital, uppercase, majuscule
+car, auto, automobile, machine, motorcar
+cardinal, central, fundamental, key, primal
+care, attention, aid, tending
+case, instance, example
+catch, grab, take hold
+cell, jail, prison
+cellular, telephone, phone, cellphone, cell, mobile
+center, centre, middle, heart, eye
+center, centre, midpoint
+certain, sure
+change, alter, modify
+change, alteration, modification
+cheap, inexpensive
+child, kid
+child, kid, youngster, minor
+choose, take, select
+cinema, theater, theatre
+committee, commission
+common, mutual
+common, usual
+comparison, comparing
+component, constituent, element, factor, ingredient
+concluding, final, last, terminal
+connection, connexion, connectedness
+consequence, effect, outcome, result, event, issue, upshot
+construct, build, make
+contend, fight, struggle
+contest, competition
+control, command
+controversy, contention, contestation, disputation, disceptation, tilt, argument, arguing
+cook, fix, ready, make, prepare
+couple, pair, twosome, duo, duet, dyad, duad
+court, courtroom
+court, tribunal, judicature
+crude, rough
+cry, weep
+cupboard, closet
+curvature, curve
+customer, client
+cut, cutting
+damage, harm
+dangerous, unsafe
+data, information
+daughter, girl
+daze, shock, stupor
+death, decease, expiry
+decide, determine
+decision, determination, conclusion
+decoration, ornament, ornamentation
+degree, grade, level
+delicate, fragile, frail
+demeanor, demeanour, behavior, behaviour, conduct, deportment
+deplorable, distressing, lamentable, pitiful, sad, sorry
+design, designing
+destruction, devastation
+development, evolution
+deviation, divergence, departure, difference
+die, decease, perish, expire, pass
+difficult, hard
+directly, straight, direct
+director, manager
+dirty, dingy, muddied, muddy
+dirty, soiled, unclean
+discipline, subject
+discover, find, uncover
+discovery, find, uncovering
+diverse, various
+divide, split, separate
+division, partition, partitioning, segmentation
+doctor, physician
+doubt, uncertainty, incertitude, dubiety, doubtfulness, dubiousness
+down, downwards, downward, downwardly
+drink, imbibe
+dwelling, home, domicile, abode, habitation
+earlier, before
+economic, economical
+education, instruction, teaching, pedagogy, didactics
+electric, electrical
+elevator, lift
+end, stop, finish, terminate, cease
+enhance, heighten, raise
+entertainment, amusement
+entitle, title
+especial, exceptional, particular, special
+examination, exam, test
+example, illustration, instance, representative
+exceed, transcend, overstep, pass, go past, top
+explain, explicate
+fabric, cloth, material, textile
+factory, mill, manufactory
+fail, neglect
+fake, false, faux, imitation, simulated
+fall, autumn
+family, household, house, home, menage
+fatty, fat
+fear, fearfulness, fright
+feather, plume, plumage
+feature, characteristic
+fierce, tearing, vehement, violent
+fight, fighting, combat
+find, regain
+fire, flame, flaming
+firm, house, business
+firm, solid
+fiscal, financial
+flight, flying
+floor, flooring
+fold, crease, plication, flexure, crimp, bend
+following, next
+force, forcefulness, strength
+foreign, strange
+forest, wood, woods
+form, shape, cast
+forward, forwards, frontward, frontwards, forrad, forrard
+free, liberate, release
+frequently, often, oftentimes, oft, ofttimes
+fume, smoke
+further, farther
+future, hereafter, futurity
+gamble, chance, risk, hazard
+get, acquire
+glue, paste
+gluey, glutinous, gummy, mucilaginous, pasty, sticky, viscid, viscous
+govern, rule
+government, authorities, regime
+grandfather, gramps, granddad, grandad, granddaddy, grandpa
+gray, grayness, grey, greyness, greyist, grayish
+green, greenish
+group, grouping
+guest, invitee
+handle, grip, handgrip, hold
+hat, chapeau, lid
+hate, detest
+hazard, jeopardy, peril, risk, endangerment
+health, wellness
+help, assist, aid
+here, hither
+hog, pig
+hospital, infirmary
+hotness, heat, temperature
+hurt, injure
+idea, thought
+ill, sick
+imitate, copy, simulate
+inaugural, initiative, initiatory
+incorporate, contain, comprise
+incorrect, wrong
+information, info
+injure, wound
+inquiry, enquiry, research
+inside, within
+institution, establishment
+internet, net, cyberspace
+introduce, innovate
+introduce, present, acquaint
+judge, justice, jurist
+jump, leap, bound, spring
+keep, maintain, hold
+land, ground, soil
+large, big
+list, listing
+look, appear, seem
+lunch, luncheon, tiffin, dejeuner
+mail, postal, post
+mail, post, send
+make, create
+manage, deal, care, handle
+mark, grade, score
+marker, marking, mark
+market, marketplace
+marriage, wedding, matrimony, union, wedlock
+measure, mensurate
+measurement, measuring, measure, mensuration
+menstruation, menses, menstruum, catamenia, period
+merely, simply, just, only, but
+metallic, metal
+metro, tube, underground, subway
+military, armed, war
+milkshake, shake
+mind, head, brain, psyche
+minute, min
+mistake, error, fault
+moisture, wet
+motion, movement, move, motility, mobility
+mountain, mount
+move, displace
+musician, instrumentalist, player
+nation, land, country
+near, close, nigh
+necktie, tie
+need, demand
+nerve, nervus
+newspaper, paper
+night, nighttime
+normally, usually, unremarkably, commonly, ordinarily
+not, non
+occupation, business, job
+offer, offering
+officeholder, officer
+open, opened
+opinion, sentiment, persuasion, view, thought
+opportunity, chance
+option, alternative, choice
+orange, orangish
+outside, exterior
+owner, possessor
+package, bundle, packet, parcel
+paint, pigment
+painting, picture
+particularly, peculiarly, especially, specially
+passenger, rider
+pause, intermission, break, interruption, suspension
+percentage, percent, pct
+person, individual
+petroleum, oil, fossil oil
+phase, stage
+picture, image, icon
+pink, pinkish
+pipe, pipage, piping
+plant, flora
+pleasure, pleasance
+plow, plough
+poetry, poesy, verse
+point, dot
+poison, toxicant, poisonous
+politician, political
+position, place
+postage, stamp
+potent, strong
+powder, pulverization, pulverisation
+power, powerful, powerfulness
+practice, practise, exercise
+precisely, exactly, just
+present, nowadays
+prevent, forestall, preclude, forbid
+probable, likely
+procedure, process
+product, production
+project, projection
+property, belongings, holding
+propose, suggest, advise
+protest, protestation
+punishment, penalty, penalization, penalisation
+purple, violet, purplish
+push, force
+question, inquiry, enquiry, query, interrogation
+quickly, rapidly, speedily, apace
+rain, rainfall
+red, reddish, ruddy, crimson, ruby-red, scarlet
+reflect, reverberate
+refuse, reject, decline
+religion, faith, religious
+remember, retrieve, recall, recollect, think
+remove, take, withdraw
+represent, correspond
+request, asking
+responsibility, responsibleness
+restaurant, eating, eatery
+result, resultant, outcome
+rigid, stiff
+rise, rising, ascent, ascension
+rival, challenger, competitor, competition, contender
+road, route
+rock, stone
+rough, unsmooth
+round, circular
+rug, carpet, carpeting
+rule, regulation
+save, preserve
+school, schoolhouse
+scope, range, reach
+section, subdivision
+serial, series
+servant, retainer
+share, portion, part, percentage
+shock, offend, scandalize, scandalise, appal, appall, outrage
+shop, store
+show, exhibit
+significant, important
+silence, quiet
+singer, vocalist, vocalizer, vocaliser
+sleep, slumber
+slice, piece
+slowly, slow, easy, tardily
+small, little
+smile, smiling, grin, grinning
+smoke, fume
+snake, serpent, ophidian
+snow, snowfall
+soap, lather
+soon, shortly
+speech, voice, oral
+spring, springtime
+stalk, stem
+standard, criterion, measure, touchstone
+state, province
+stomach, tummy, tum
+stop, halt
+strange, unusual
+structure, construction
+student, pupil, educatee
+stylish, fashionable
+subject, topic, theme
+substitution, exchange, commutation
+suffer, endure
+suggestion, proposition, proffer
+sum, amount, total
+summer, summertime
+supply, provide, render, furnish
+sweet, sweetness, sugariness
+sympathize, sympathise, empathize, empathise, understand
+system, scheme
+tax, taxation
+teach, learn, instruct
+teacher, instructor
+test, prove, try, examine
+testify, witness, prove, evidence, show
+thin, lean
+thorax, chest, pectus
+throat, pharynx
+toilet, lavatory, privy, bathroom
+track, rail, rails, runway
+trade, merchandise
+training, preparation
+transportation, shipping, transport
+treatment, handling
+tremble, shiver, shake
+trouble, problem
+truly, genuinely, really
+truthful, true
+try, seek, attempt, essay, assay
+unlike, dissimilar, different
+unmarried, single
+up, upwards, upward, upwardly
+use, usage, utilization, utilisation
+use, utilize, utilise, apply, employ
+vacation, holiday
+village, hamlet, settlement
+voice, vocalization, vocalisation, vocalism, phonation, vox
+water, h2o
+wide, broad
+will, testament
+wine, vino
+winter, wintertime
+writer, author
+abhor, loathe, detest
+act, deed
+adieu, bye, cheerio, farewell, goodbye
+administration, direction, management
+aggressor, assailant, attacker, assaulter
+air conditioning, ac, air-conditioning
+alarm, alert, warning
+algicide, algaecide
+allocation, allotment
+alluvion, flood, overflowing, inundation
+apiculture, beekeeping
+approval, approbation
+archaeology, archeology
+archeologist, archaeologist
+arrange, adapt, adjust, conform, accommodate
+assassin, assassinator
+assemble, gather
+assumption, supposition
+beekeeper, apiculturist
+beverage, drink
+bicycle, bike, cycle
+big, large
+birth, childbirth, parturition
+botany, phytology
+bus, coach
+car, automobile
+chemist, pharmacist, pharmacy
+clothing, apparel
+coin, money
+compound, chemical
+condom, prophylactic, rubber
+constructed, artificial
+country, nation
+creativity, inventiveness
+day, daytime
+death penalty, death sentence
+declaration, statement
+defendant, accused
+dice, die
+disease, illness, affliction
+dress, clothe
+drink, gulp, quaff, sip
+employment, job, occupation
+fat, obese
+female, woman
+fertilisation, fecundation
+field, land, acre, patch
+firefighter, fireman, firewoman, fire fighter
+firm, corporation, enterprise, company, venture
+flint, flintstone
+flower, bloom, blossom
+freedom, liberty
+glasses, spectacles
+grammer, grammar
+haemorrhage, bleeding
+hairdresser, barber
+heathen, infidel, pagan
+home, house
+hospital, clinic
+husband, spouse
+influenza, flu
+info, information
+island, isle
+journal, mag, magazine, periodical
+judgement, sentence
+lamp, light
+lavender, lavander
+lunch, luncheon
+machinery, mechanism
+male, man
+market, marketplace
+mason, bricklayer, stonemason
+melody, tune
+molar, tooth
+moon, luna
+motherhood, maternity
+motorcycle, motorbike
+motorway, pike, expressway, freeway, highway, throughway, thruway
+neoplasm, tumour
+obstacle, obstruction
+ocean, sea
+ontogenesis, ontogeny
+opinion, stance
+photo, photograph
+piano, pianoforte
+place, location
+radioactive, nuclear
+referendum, plebiscite
+refrigerator, fridge
+rhino, rhinoceros
+safety, security
+sex, gender
+slaughterhouse, abattoir, butchery
+storm, tempest
+strange, odd
+sudden, abrupt, precipitous
+transport, transportation
+university, academy
+veterinarian, veterinary
+viable, feasible
+wife, spouse
+wizard, sorcerer, magician
+zero, null
+
+#
+# AUCTUS: Custom
+#
+
+taxi, taxicab, cab

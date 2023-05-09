@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "auctus"
+version = "0.10"
+description = "Auctus system meta-package"
+
+license = "Apache-2.0"
+
+authors = [
+    "Remi Rampin <remi.rampin@nyu.edu>",
+]
+
+repository = "https://gitlab.com/ViDA-NYU/auctus/auctus"
+homepage = "https://auctus.vida-nyu.org/"
+
+keywords = ["auctus", "datamart"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+packages = []
+
+include = []
+
+[tool.poetry.dependencies]
+python = "^3.8,<3.11" # Upper bound for numpy
+datamart-profiler = {path = "./lib_profiler", develop=true}
+datamart-materialize = {path = "./lib_materialize", develop=true}
+datamart-augmentation = {path = "./lib_augmentation", develop=true}
+datamart-geo = {path = "lib_geo", develop=true}
+datamart-core = {path = "./lib_core", develop=true}
+datamart-fslock = {path = "./lib_fslock", develop=true}
+datamart-coordinator-service = {path = "./coordinator", develop=true}
+datamart-profiler-service = {path = "./profiler", develop=true}
+datamart-api-service = {path = "./apiserver", develop=true}
+datamart-cache-cleaner-service = {path = "cache_cleaner", develop=true}
+datamart-snapshotter-service = {path = "snapshotter", develop=true}
+datamart-noaa-discovery-service = {path = "./discovery/noaa", develop=true}
+datamart-socrata-discovery-service = {path = "./discovery/socrata", develop=true}
+datamart-zenodo-discovery-service = {path = "./discovery/zenodo", develop=true}
+datamart-ckan-discovery-service = {path = "./discovery/ckan", develop=true}
+datamart-uaz-indicators-service = {path = "./discovery/uaz_indicators", develop=true}
+datamart-worldbank-discovery-service = {path= "./discovery/worldbank", develop=true}
+datamart-isi-discovery-service = {path= "./discovery/isi", develop=true}
+toml = "*"
+opentelemetry-exporter-jaeger-thrift = "*"
+
+[tool.poetry.dev-dependencies]
+flake8 = "*"
+PyYaml = "*"
+requests = "*"
+coverage = "*" # Keep it in sync with Dockerfiles for CI
+jsonschema = ">=3.0,<4"
+readme_renderer = "*"
+Sphinx = "*"
+sphinx-rtd-theme = "^0.5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
