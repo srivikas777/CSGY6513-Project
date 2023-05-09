@@ -63,3 +63,17 @@ The Backend We server will be hosted on: http://127.0.0.1:5000
 ## Related Work:
 
 In this work, we compared the performance of Parquet and CSV file formats using two popular libraries, Pandas and DuckDB. Our experiments showed that Pandas took 0.29 seconds to read the Parquet file, while it took 0.618 seconds to read the CSV file. On the other hand, DuckDB took 0.026 seconds to read the Parquet file. These results suggest that Parquet file format is more efficient than CSV file format for data analysis tasks, and DuckDB provides better perfor- mance than Pandas for reading Parquet files.
+
+## Extra Feature 
+
+Initially, we developed a separate server for executing queries on datasets, which operates independently from Auctus. This was done to reduce the load on low-end machines, as we faced issues while reproducing Auctus initially. We thought it would be a great idea to develop a separate low-load server.
+
+To use this initial repository, follow these steps:
+
+Step 1: Set up MinIO locally by following the steps in "https://min.io/docs/minio/windows/index.html."
+
+Step 2: Start the frontend by running "npm start" in the "my-app" folder.
+
+Step 3: Start the backend by running "python main.py."
+
+After completing these steps, you should be able to launch a separate page where you can input the dataset ID and queries without depending on Auctus. The reproduction steps for using this server locally are straightforward.
