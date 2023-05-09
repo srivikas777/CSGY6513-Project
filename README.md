@@ -50,13 +50,11 @@ Elasticsearch is at http://localhost:8020
 Import a snapshot of our index (optional):
 $ scripts/docker_import_snapshot.sh - This will download an Elasticsearch dump from auctus.vida-nyu.org and import it into your local Elasticsearch container.
 
-- To start the backend server, start by running the .py file:
-  -  python3 main.py
-
 The main Auctus Interface is hosted on: localhost:3001
 The Backend We server will be hosted on: http://127.0.0.1:5000
 
-- Workflow: When the user selects a dataset and want's to query that dataset, that user can click on the SQL Query command, where it gets redirected into another page with a New Frontend where the user has the ability to enter the SQL commands. After hitting the submit button, the user can view the results in that same user Interface, where the results will be well formatted in the form of a dataframe(Rows and Columns).
+- Workflow: When the user selects a dataset and want's to query that dataset, that user can click on the SQL Query command, where it gets redirected into another page with a New Frontend where the user has the ability to enter the SQL commands. After hitting the submit button, the user can view the results in that same user Interface, where the results will be well formatted in the form of a dataframe(Rows and Columns). 
+- Important: The table should be in the name of "my_parquet_table" while entering the SQL Queries.
 
 ![Interface](Interface.png)
 
