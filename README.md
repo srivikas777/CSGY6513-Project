@@ -22,7 +22,7 @@ The proposed methodology will leverage PyArrow, Pan- das, Flask, DuckDB Python l
 Instructions to Reproduce the code base:
 
 - First start by cloning the entire repository and install all the necessary fraeworks like npm, Flask, minIO, DuckDB to get started and you can also download all the dependencies from the Auctus folder as well as the Querying folder.
-  -  git clone 
+  -  git clone https://github.com/srivikas777/CSGY6513-Project.git
 
 - There are main 2 servers that has to be hosted for making the entire data pipeline work. The Auctus folder has the frontend part and this can be started using:
   -  npm start
