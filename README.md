@@ -30,6 +30,17 @@ Instructions to Reproduce the code base:
 
 - Next step after setting up the MinIO, you should have the docker containers runnung by going into the auctus folder and then following the below commands:
   
+
+- Workflow: When the user selects a dataset and want's to query that dataset, that user can copy that dataset ID and paste it over the Interface we created to view the results of the query when the user hits the submit button and the results will be well formatted in the form of a dataframe(Rows and Columns). 
+- Important: The table should be in the name of "my_parquet_table" while entering the SQL Queries.
+
+![Interface](Interface.png)
+
+## Related Work:
+
+In this work, we compared the performance of Parquet and CSV file formats using two popular libraries, Pandas and DuckDB. Our experiments showed that Pandas took 0.29 seconds to read the Parquet file, while it took 0.618 seconds to read the CSV file. On the other hand, DuckDB took 0.026 seconds to read the Parquet file. These results suggest that Parquet file format is more efficient than CSV file format for data analysis tasks, and DuckDB provides better perfor- mance than Pandas for reading Parquet files.
+
+Additional Steps: [If you want to have the Auctus Interface running on your local Enviroment and add any new features]
 $ docker-compose build --build-arg version=$(git describe) apiserver
 Start the base containers
 $ docker-compose up -d elasticsearch rabbitmq redis minio lazo
@@ -53,14 +64,6 @@ $ scripts/docker_import_snapshot.sh - This will download an Elasticsearch dump f
 The main Auctus Interface is hosted on: localhost:3001
 The Backend We server will be hosted on: http://127.0.0.1:5000
 
-- Workflow: When the user selects a dataset and want's to query that dataset, that user can click on the SQL Query command, where it gets redirected into another page with a New Frontend where the user has the ability to enter the SQL commands. After hitting the submit button, the user can view the results in that same user Interface, where the results will be well formatted in the form of a dataframe(Rows and Columns). 
-- Important: The table should be in the name of "my_parquet_table" while entering the SQL Queries.
-
-![Interface](Interface.png)
-
-## Related Work:
-
-In this work, we compared the performance of Parquet and CSV file formats using two popular libraries, Pandas and DuckDB. Our experiments showed that Pandas took 0.29 seconds to read the Parquet file, while it took 0.618 seconds to read the CSV file. On the other hand, DuckDB took 0.026 seconds to read the Parquet file. These results suggest that Parquet file format is more efficient than CSV file format for data analysis tasks, and DuckDB provides better perfor- mance than Pandas for reading Parquet files.
 
 ## Extra Feature 
 
